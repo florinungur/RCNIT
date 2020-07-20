@@ -1,0 +1,17 @@
+apiVersion: pingcap.com/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-delay
+spec:
+  action: delay
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  delay:
+    latency: "90ms"
+    correlation: "25"
+    jitter: "90ms"
+  duration: "60s"
+  scheduler:
+    cron: "@daily"

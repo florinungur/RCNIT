@@ -1,0 +1,16 @@
+apiVersion: pingcap.com/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-duplicate
+spec:
+  action: duplicate
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  duplicate:
+    duplicate: "40"
+    correlation: "25"
+  duration: "60s"
+  scheduler:
+    cron: "@daily"

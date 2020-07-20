@@ -1,0 +1,12 @@
+apiVersion: pingcap.com/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-kill
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  scheduler:
+    cron: "@daily"

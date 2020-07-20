@@ -1,0 +1,13 @@
+apiVersion: pingcap.com/v1alpha1
+kind: TimeChaos
+metadata:
+  name: time-chaos
+spec:
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  timeOffset: "-10m100ns"
+  duration: "60s"
+  scheduler:
+    cron: "@daily"

@@ -1,0 +1,14 @@
+apiVersion: pingcap.com/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-failure
+spec:
+  action: pod-failure
+  mode: one
+  value: ""
+  duration: "60s"
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  scheduler:
+    cron: "@daily"

@@ -1,0 +1,16 @@
+apiVersion: pingcap.com/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-corrupt
+spec:
+  action: corrupt
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  corrupt:
+    corrupt: "40"
+    correlation: "25"
+  duration: "60s"
+  scheduler:
+    cron: "@daily"

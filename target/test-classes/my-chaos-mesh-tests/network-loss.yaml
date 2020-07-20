@@ -1,0 +1,16 @@
+apiVersion: pingcap.com/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-loss
+spec:
+  action: loss
+  mode: one
+  selector:
+    labelSelectors:
+      app: rcnit-chaos-mesh-testing
+  loss:
+    loss: "25"
+    correlation: "25"
+  duration: "60s"
+  scheduler:
+    cron: "@daily"

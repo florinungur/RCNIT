@@ -1,0 +1,168 @@
+# See https://github.com/alexei-led/pumba/blob/master/deploy/
+# Made them pods instead of a DaemonSets to watch their logs using fabric8's client
+# A bit more complex to watch the logs of a pod you don't know the name of (from a DaemonSet)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pumba-kill
+  labels:
+    com.gaiaadm.pumba: "true"
+spec:
+  containers:
+    # randomly kill containers in Pod named 'test-kill' every 30s
+    - image: gaiaadm/pumba
+      imagePullPolicy: IfNotPresent
+      name: pumba-kill
+      args:
+        - --random
+        - --log-level
+        - debug # the 'level=fatal' logs are displayed if the log-level is debug (maybe warn too)
+        - --label
+        - io.kubernetes.pod.name=test-kill
+        - --interval
+        - 30s
+        - kill
+      resources:
+        requests:
+          cpu: 10m
+          memory: 5M
+        limits:
+          cpu: 100m
+          memory: 20M
+      volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+  volumes:
+    - hostPath:
+        path: /var/run/docker.sock
+      name: dockersocket
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pumba-pause
+  labels:
+    com.gaiaadm.pumba: "true"
+spec:
+  containers:
+    # randomly pause containers in Pod named 'test-pause' every 20s for 10s
+    - image: gaiaadm/pumba
+      imagePullPolicy: IfNotPresent
+      name: pumba-pause
+      args:
+        - --random
+        - --log-level
+        - debug
+        - --label
+        - io.kubernetes.pod.name=test-pause
+        - --interval
+        - 20s
+        - pause
+        - --duration
+        - 10s
+      securityContext:
+        # privileged: true
+        capabilities:
+          add: ["NET_ADMIN"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 5M
+        limits:
+          cpu: 100m
+          memory: 20M
+      volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+  volumes:
+    - hostPath:
+        path: /var/run/docker.sock
+      name: dockersocket
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pumba-remove
+  labels:
+    com.gaiaadm.pumba: "true"
+spec:
+  containers:
+    # randomly remove containers in Pod named 'test-remove' every 1m
+    - image: gaiaadm/pumba
+      imagePullPolicy: IfNotPresent
+      name: pumba-remove
+      args:
+        - --random
+        - --log-level
+        - debug
+        - --label
+        - io.kubernetes.pod.name=test-remove
+        - --interval
+        - 1m
+        - rm
+      resources:
+        requests:
+          cpu: 10m
+          memory: 5M
+        limits:
+          cpu: 100m
+          memory: 20M
+      volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+  volumes:
+    - hostPath:
+        path: /var/run/docker.sock
+      name: dockersocket
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pumba-delay
+  labels:
+    com.gaiaadm.pumba: "true"
+spec:
+  containers:
+    # randomly add a  3000ms ± 30ms delay to 'test-delay' Pod containers every 1m for 20s,
+    # where variation in delay is described by `normal` distribution
+    - image: gaiaadm/pumba
+      imagePullPolicy: IfNotPresent
+      name: pumba-delay
+      args:
+        - --random
+        - --log-level
+        - debug
+        - --label
+        - io.kubernetes.pod.name=test-delay
+        - --interval
+        - 1m
+        - netem
+        - --duration
+        - 20s
+        - --tc-image
+        - gaiadocker/iproute2
+        - delay
+        - --time
+        - "3000"
+        - --jitter
+        - "30"
+        - --distribution
+        - normal
+      # https://github.com/alexei-led/pumba/issues/153#issuecomment-599509710
+      securityContext:
+        capabilities:
+          add: ["NET_ADMIN"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 5M
+        limits:
+          cpu: 100m
+          memory: 20M
+      volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+  volumes:
+    - hostPath:
+        path: /var/run/docker.sock
+      name: dockersocket
