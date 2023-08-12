@@ -14,7 +14,7 @@ Please see [output.txt](output.txt) for a trimmed console output example of runn
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/ungurflorin/rcnit.git <YOUR-DESIRED-FOLDER>`.
+1. Clone the repository: `git clone https://github.com/florinungur/rcnit.git <YOUR-DESIRED-FOLDER>`.
 2. Import the repository intro your IDE as a Maven project.
 3. [Install JDK 14](https://docs.oracle.com/en/java/javase/14/install/overview-jdk-installation.html).
 4. [Install minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/).
